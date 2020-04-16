@@ -6,31 +6,14 @@ import (
 
 	"github.com/QOLPlus/discord-bot/handlers/stock"
 	"github.com/QOLPlus/discord-bot/handlers/weather"
+	"github.com/QOLPlus/discord-bot/refs"
 )
-type HandlerProc func(*discordgo.Session, *discordgo.MessageCreate, []string)
-type HandlerMap map[string]HandlerProc
-type HandlerRegistry struct {
-	Commands []string
-	Proc HandlerProc
-}
-func (h HandlerMap) getKeys() []string {
-	keys := make([]string, 0, len(h))
-	for key := range h {
-		keys = append(keys, key)
-	}
-	return keys
-}
-func (h HandlerMap) register(registry *HandlerRegistry) {
-	for _, command := range registry.Commands {
-		h[command] = registry.Proc
-	}
-}
 
 func HandlerFactory() interface{} {
-	onHandlers := make(HandlerMap)
-	onHandlers.register(stock.Registry)
-	onHandlers.register(weather.Registry)
-	onCommands := onHandlers.getKeys()
+	onHandlers := make(refs.HandlerMap)
+	onHandlers.Register(stock.Registry)
+	onHandlers.Register(weather.Registry)
+	onCommands := onHandlers.GetKeys()
 
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		tasks := groupByCommands(parseTokens(m.Content), onCommands)

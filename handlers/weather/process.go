@@ -5,10 +5,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"strings"
 
-	"github.com/QOLPlus/discord-bot/handlers"
+	"github.com/QOLPlus/discord-bot/refs"
 )
 
-var Registry = &handlers.HandlerRegistry{
+var Registry = &refs.HandlerRegistry{
 	Commands: []string{"날씨", "웨더"},
 	Proc:     Process,
 }

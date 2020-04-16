@@ -7,10 +7,10 @@ import (
 	"strings"
 
 	"github.com/QOLPlus/core/commands/stock"
-	"github.com/QOLPlus/discord-bot/handlers"
+	"github.com/QOLPlus/discord-bot/refs"
 )
 
-var Registry = &handlers.HandlerRegistry{
+var Registry = &refs.HandlerRegistry{
 	Commands: []string{"주식", "스탁"},
 	Proc:     Process,
 }
