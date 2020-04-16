@@ -1,0 +1,13 @@
+if [ -z "$BOT_VERSION" ]; then
+  echo "환경변수 BOT_VERSION 를 세팅하세요. Docker 태그로 이용됩니다. ex) 1.2.3"
+  exit;
+fi
+
+if [ ! -f deploy.priv_key ]; then
+  echo "deploy.priv_key 파일을 현재 디렉토리 ( $(pwd) ) 에 위치하세요."
+  exit;
+fi
+
+docker build -f Dockerfile \
+             -t "docker.pkg.github.com/qolplus/discord-bot/discord-bot:$BOT_VERSION" \
+             --build-arg SSH_PRIV_KEY="$(cat deploy.priv_key)" .
