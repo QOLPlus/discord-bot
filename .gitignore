@@ -2,3 +2,4 @@
 .envrc
 /discord-bot
 /tmp
+deploy.priv_key
