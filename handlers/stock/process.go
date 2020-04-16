@@ -7,12 +7,15 @@ import (
 	"strings"
 
 	"github.com/QOLPlus/core/commands/stock"
+	"github.com/QOLPlus/discord-bot/handlers"
 )
 
-const (
-	Command = "주식"
-	MaxCount = 3
-)
+var Registry = &handlers.HandlerRegistry{
+	Commands: []string{"주식", "스탁"},
+	Proc:     Process,
+}
+
+const MaxCount int = 3
 
 func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	codes := make([]string, 0)
