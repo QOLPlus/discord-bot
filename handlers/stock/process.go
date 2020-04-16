@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"strings"
+	"time"
 
 	"github.com/QOLPlus/core/commands/stock"
 	"github.com/QOLPlus/discord-bot/refs"
@@ -98,7 +99,11 @@ func buildEmbedFromSecurity(security stock.FetchedSecurity) *discordgo.MessageEm
 	return &discordgo.MessageEmbed{
 		Color: embedColor,
 		Thumbnail: &discordgo.MessageEmbedThumbnail{
-			URL: "https://fn-chart.dunamu.com/images/kr/stock/d/mini/" + security.ShortCode + ".png",
+			URL: fmt.Sprintf(
+				"https://fn-chart.dunamu.com/images/kr/stock/d/mini/%s.png?%d",
+				security.ShortCode,
+				time.Now().Unix(),
+			),
 		},
 		Fields: []*discordgo.MessageEmbedField{
 			{
