@@ -1,6 +1,10 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/QOLPlus/core v1.0.0 h1:eyrEAuMBIko9swlyto+Q/wNp51zm2c1kN4X+a97/Jr8=
 github.com/QOLPlus/core v1.0.0/go.mod h1:bt67vx7DnEooNxXg7pp78Dz7xc/LsemVJeKKLPz/To0=
+github.com/QOLPlus/core v1.0.1 h1:XC8D8oGI69iGN7NHoR/UgaR+o/fWsDtZrMy4RT0lcgk=
+github.com/QOLPlus/core v1.0.1/go.mod h1:bt67vx7DnEooNxXg7pp78Dz7xc/LsemVJeKKLPz/To0=
+github.com/QOLPlus/core v1.0.2 h1:Vqx+Hs0kKYNSBGIdg8RhZBGMcHFHgkV5aUciOZ3NZJE=
+github.com/QOLPlus/core v1.0.2/go.mod h1:bt67vx7DnEooNxXg7pp78Dz7xc/LsemVJeKKLPz/To0=
 github.com/bwmarrin/discordgo v0.20.3 h1:AxjcHGbyBFSC0a3Zx5nDQwbOjU7xai5dXjRnZ0YB7nU=
 github.com/bwmarrin/discordgo v0.20.3/go.mod h1:O9S4p+ofTFwB02em7jkpkV8M3R0/PUVOwN61zSZ0r4Q=
 github.com/cosmtrek/air v1.12.1 h1:5YnQHF0a09Yt8vNWYtK3CtlR8aodV4w23Iz+fLSDLE4=

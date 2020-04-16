@@ -23,11 +23,18 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 			continue
 		}
 
-		searchCodes := searchAssetsResult.GetCodes()
+		searchCodes := searchAssetsResult.FindExactlySameCodesByKeyword(keyword)
 		if len(searchCodes) == 0 {
-			continue
+			searchCodes = searchAssetsResult.GetCodes()
+			if len(searchCodes) == 0 {
+				continue
+			}
 		}
-		codes = append(codes, searchCodes[0:1]...)
+		if len(searchCodes) == 1 {
+			codes = append(codes, searchCodes[0])
+		} else {
+			codes = append(codes, searchCodes[0:2]...)
+		}
 	}
 
 	if len(codes) == 0 {
@@ -42,14 +49,15 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	}
 
 	for idx, security := range fetchSecuritiesResult.RecentSecurities {
+		if idx == MaxCount {
+			warning := fmt.Sprintf("한번에 %d종목 이상을 조회할 수 없습니다.", MaxCount)
+			_, _ = s.ChannelMessageSend(m.ChannelID, warning)
+			break
+		}
 		_, _ = s.ChannelMessageSendEmbed(
 			m.ChannelID,
 			buildEmbedFromSecurity(security),
 		)
-		if idx == MaxCount {
-			warning := fmt.Sprintf("한번에 %d종목 이상을 조회할 수 없습니다.", MaxCount)
-			_, _ = s.ChannelMessageSend(m.ChannelID, warning)
-		}
 	}
 }
 
