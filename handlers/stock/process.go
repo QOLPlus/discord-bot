@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
+	"math"
 	"strings"
 	"time"
 
@@ -17,11 +18,35 @@ var Registry = &refs.HandlerRegistry{
 }
 
 const MaxCount int = 3
+const SubCmdDetail string = "상세"
+
+type parsedConfigEntry struct {
+	Keyword string
+	Detail bool
+}
+type parsedConfig map[string]parsedConfigEntry
 
 func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	codes := make([]string, 0)
+	config := parsedConfig{}
 
-	for _, keyword := range data {
+	for _, phrase := range data {
+		subCmdWithPhrase := strings.SplitN(phrase, " ", 2)
+		var (
+			subCmd  string
+			keyword string
+		)
+
+		if len(subCmdWithPhrase) < 2 {
+			subCmd = ""
+			keyword = subCmdWithPhrase[0]
+
+			// 그냥 지속
+		} else {
+			subCmd = subCmdWithPhrase[0]
+			keyword = subCmdWithPhrase[1]
+		}
+
 		searchAssetsResult, err := stock.SearchAssetsByKeyword(keyword)
 		if err != nil {
 			continue
@@ -34,10 +59,17 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 				continue
 			}
 		}
-		if len(searchCodes) == 1 {
-			codes = append(codes, searchCodes[0])
-		} else {
-			codes = append(codes, searchCodes[0:2]...)
+
+		if len(searchCodes) > 3 {
+			searchCodes = searchCodes[0:2]
+		}
+
+		for _, code := range searchCodes {
+			config[code] = parsedConfigEntry{
+				Keyword: keyword,
+				Detail: subCmd == SubCmdDetail,
+			}
+			codes = append(codes, code)
 		}
 	}
 
@@ -58,46 +90,45 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 			_, _ = s.ChannelMessageSend(m.ChannelID, warning)
 			break
 		}
+
+		doResponse(s, m, security, config)
+	}
+}
+
+func doResponse(s *discordgo.Session, m *discordgo.MessageCreate, security stock.FetchedSecurity, config parsedConfig) {
+	if config[security.Id].Detail {
 		_, _ = s.ChannelMessageSendEmbed(
 			m.ChannelID,
-			buildEmbedFromSecurity(security),
+			buildDetailEmbedMessage(security),
+		)
+	} else {
+		_, _ = s.ChannelMessageSend(
+			m.ChannelID,
+			buildSimpleMessage(security),
 		)
 	}
 }
 
-func buildEmbedFromSecurity(security stock.FetchedSecurity) *discordgo.MessageEmbed {
-	var (
-		embedArrow string
-		embedColor int
-		embedMarket string
+func buildSimpleMessage(security stock.FetchedSecurity) string {
+	return fmt.Sprintf(
+		"**%s**: %s [%s]",
+		asterNameIfKosdaq(security),
+		strings.Join([]string{
+			humanize.Commaf(security.TradePrice),
+			fmt.Sprintf("%s%.2f", arrowOfSecurity(security), math.Abs(security.ChangePrice)),
+			"(" + fmt.Sprintf("%.2f", security.ChangePriceRate * 100) + "%)",
+		}, " "),
+		fmt.Sprintf(
+			"%s주 / %s원",
+			humanize.Comma(security.AccTradeVolume),
+			humanize.Commaf(security.GlobalAccTradePrice),
+		),
 	)
+}
 
-	switch security.Change {
-	case "UPPER_LIMIT":
-		embedArrow = "↑"
-		embedColor = 16062488
-	case "RISE":
-		embedArrow = "▲"
-		embedColor = 16062488
-	case "FALL":
-		embedArrow = "▼"
-		embedColor = 1794513
-	case "LOWER_LIMIT":
-		embedArrow = "↓"
-		embedColor = 1794513
-	default:
-		embedArrow = ""
-		embedColor = 0
-	}
-
-	if security.Market == "KOSDAQ" {
-		embedMarket = "*"
-	} else {
-		embedMarket = ""
-	}
-
+func buildDetailEmbedMessage(security stock.FetchedSecurity) *discordgo.MessageEmbed {
 	return &discordgo.MessageEmbed{
-		Color: embedColor,
+		Color: colorOfSecurity(security),
 		Thumbnail: &discordgo.MessageEmbedThumbnail{
 			URL: fmt.Sprintf(
 				"https://fn-chart.dunamu.com/images/kr/stock/d/mini/%s.png?%d",
@@ -107,14 +138,10 @@ func buildEmbedFromSecurity(security stock.FetchedSecurity) *discordgo.MessageEm
 		},
 		Fields: []*discordgo.MessageEmbedField{
 			{
-				Name: fmt.Sprintf(
-					"%s%s",
-					security.Name,
-					embedMarket,
-				),
+				Name: asterNameIfKosdaq(security),
 				Value: strings.Join([]string{
 					humanize.Commaf(security.TradePrice),
-					fmt.Sprintf("%s%.2f", embedArrow, security.ChangePrice),
+					fmt.Sprintf("%s%.2f", arrowOfSecurity(security), math.Abs(security.ChangePrice)),
 					"(" + fmt.Sprintf("%.2f", security.ChangePriceRate * 100) + "%)",
 				}, " "),
 			},
