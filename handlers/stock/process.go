@@ -31,6 +31,10 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	config := parsedConfig{}
 
 	for _, phrase := range data {
+		if len(phrase) == 0 {
+			continue
+		}
+
 		subCmdWithPhrase := strings.SplitN(phrase, " ", 2)
 		var (
 			subCmd  string
@@ -74,13 +78,13 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	}
 
 	if len(codes) == 0 {
-		_, _ = s.ChannelMessageSend(m.ChannelID, "주식 정보를 찾을 수 없습니다.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "주식 정보를 찾을 수 없습니다. `[주식 검색어]` or `[주식 상세 검색어]`")
 		return
 	}
 
 	fetchSecuritiesResult, err := stock.FetchSecuritiesByCodes(codes)
 	if err != nil {
-		_, _ = s.ChannelMessageSend(m.ChannelID, "주식 정보를 불러올 수 없습니다.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "주식 정보를 불러올 수 없습니다. `[주식 검색어]` or `[주식 상세 검색어]`")
 		return
 	}
 

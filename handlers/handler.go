@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/QOLPlus/discord-bot/handlers/stock_trend"
 	"github.com/bwmarrin/discordgo"
 	"strings"
 
@@ -12,10 +13,15 @@ import (
 func HandlerFactory() interface{} {
 	onHandlers := make(refs.HandlerMap)
 	onHandlers.Register(stock.Registry)
+	onHandlers.Register(stock_trend.Registry)
 	onHandlers.Register(weather.Registry)
 	onCommands := onHandlers.GetKeys()
 
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
+		if m.Author.Bot {
+			return
+		}
+
 		tasks := groupByCommands(parseTokens(m.Content), onCommands)
 		if len(tasks) == 0 {
 			return
@@ -76,12 +82,18 @@ func groupByCommands(tokens []string, permits []string) map[string][]string {
 
 	for _, token := range tokens {
 		cmdWithPhrase := strings.SplitN(token, " ", 2)
-		if len(cmdWithPhrase) < 2 {
+		var (
+			command string
+			phrase string = ""
+		)
+		if len(cmdWithPhrase) < 1 {
 			continue
+		} else if len(cmdWithPhrase) == 1 {
+			command = cmdWithPhrase[0]
+		} else {
+			command = cmdWithPhrase[0]
+			phrase = cmdWithPhrase[1]
 		}
-
-		command := cmdWithPhrase[0]
-		phrase := cmdWithPhrase[1]
 
 		if _, ok := permitMap[command]; ok {
 			commandGroup[command] = append(commandGroup[command], phrase)
