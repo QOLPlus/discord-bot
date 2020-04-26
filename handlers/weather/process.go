@@ -26,6 +26,10 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 		}
 
 		region := data.GetFirstRegionCode()
+		if region == nil {
+			_, _ = s.ChannelMessageSend(m.ChannelID, "찾을 수 없는 지역입니다.")
+			return
+		}
 		fetched, err := weather.FetchWeather(region)
 		if err != nil {
 			_, _ = s.ChannelMessageSend(m.ChannelID, "알 수 없는 에러가 발생했습니다.")
