@@ -9,7 +9,7 @@ import (
 )
 
 var Registry = &refs.HandlerRegistry{
-	Commands: []string{"날씨", "웨더", "날씨"},
+	Commands: []string{"날씨", "웨더", "온도", "기온"},
 	Proc:     Process,
 }
 
@@ -39,14 +39,20 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 }
 
 func buildMessage(r *weather.FetchWeatherResult) string {
+	beforeString := "어제와 같음"
+	before := int(r.DiffWithYesterday)
+	if before != 0 {
+		beforeString = fmt.Sprintf("어제대비 %d")
+	}
+
 	return fmt.Sprintf(
-		"**%s**: %s **%d**°C (체감 %d°, 어제보다 %d°) [최저 %d° ~ 최고 %d°]",
+		"**%s**: %s **%d**°C (체감 %d°, 어제보다 %s°) [최저 %d° ~ 최고 %d°]",
 		r.Location,
 		r.Status,
 
 		int(r.Temperature),
 		int(r.TemperatureDayFeel),
-		int(r.DiffWithYesterday),
+		beforeString,
 		int(r.TemperatureDayLow),
 		int(r.TemperatureDayHigh),
 	)
