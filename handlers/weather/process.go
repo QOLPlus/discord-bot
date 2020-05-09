@@ -39,8 +39,8 @@ func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 }
 
 func buildMessage(r *weather.FetchWeatherResult) string {
-	return fmt.Sprintf(
-		"**%s**: %s **%d**°C (체감 %d°) [최저 %d° ~ 최고 %d°]\n**미세/초미세/자외선**: %d (%s) / %d (%s) / %d (%s)",
+	message := fmt.Sprintf(
+		"**%s**: %s **%d**°C (체감 %d°) [최저 %d° ~ 최고 %d°]",
 		r.Location,
 		r.Status,
 
@@ -48,12 +48,19 @@ func buildMessage(r *weather.FetchWeatherResult) string {
 		int(r.TemperatureDayFeel),
 		int(r.TemperatureDayLow),
 		int(r.TemperatureDayHigh),
-
-		r.FineDust,
-		r.FineDustStatus,
-		r.UltraFineDust,
-		r.UltraFineDustStatus,
-		r.UltravioletLay,
-		r.UltravioletLayStatus,
 	)
+
+	if len(r.FineDustStatus) > 0 {
+		message += "\n"
+		message += fmt.Sprintf(
+			"**미세/초미세/자외선**: %d (%s) / %d (%s) / %d (%s)",
+			r.FineDust,
+			r.FineDustStatus,
+			r.UltraFineDust,
+			r.UltraFineDustStatus,
+			r.UltravioletLay,
+			r.UltravioletLayStatus,
+		)
+	}
+	return message
 }
