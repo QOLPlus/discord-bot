@@ -128,6 +128,9 @@ func handleMentions(s *discordgo.Session, m *discordgo.MessageCreate, mentions [
 		return false, err
 	}
 
+	// message delete 는 실패해도 크리티컬 하지 않다.
+	_ = s.ChannelMessageDelete(m.ChannelID, m.ID)
+
 	return true, nil
 }
 
