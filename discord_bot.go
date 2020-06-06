@@ -12,7 +12,7 @@ import (
 
 const gameTitle = "Quality of Life"
 
-func main()  {
+func main() {
 	authToken := os.Getenv("DISCORD_AUTHENTICATION_TOKEN")
 	bot, err := discordgo.New("Bot " + authToken)
 	if err != nil {

@@ -22,6 +22,10 @@ func HandlerFactory() interface{} {
 			return
 		}
 
+		if mentionHandled(s, m) {
+			return
+		}
+
 		tasks := groupByCommands(parseTokens(m.Content), onCommands)
 		if len(tasks) == 0 {
 			return
