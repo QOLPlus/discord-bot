@@ -73,7 +73,7 @@ func handleMentions(s *discordgo.Session, m *discordgo.MessageCreate, mentions [
 
 	content := m.Content
 
-	for _, mention := range mentions {
+	for i, mention := range mentions {
 		originalMessage, err := s.ChannelMessage(mention.ChannelId, mention.MessageId)
 		if err != nil {
 			continue
@@ -110,7 +110,7 @@ func handleMentions(s *discordgo.Session, m *discordgo.MessageCreate, mentions [
 			},
 		})
 
-		content = strings.ReplaceAll(content, mention.Content,"🏷️️")
+		content = strings.ReplaceAll(content, mention.Content,fmt.Sprintf("️️||📎%d||", i+1))
 	}
 
 	webhook, err := getOrCreateWebhook(s, m)
