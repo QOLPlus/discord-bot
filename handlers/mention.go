@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var re = regexp.MustCompile(`https?://discordapp.com/channels/(?P<serverId>\w+)/(?P<channelId>\w+)/(?P<messageId>\w+)`)
+var re = regexp.MustCompile(`https?://discord(app)?.com/channels/(?P<serverId>\w+)/(?P<channelId>\w+)/(?P<messageId>\w+)`)
 
 type Mention struct {
 	Content   string
