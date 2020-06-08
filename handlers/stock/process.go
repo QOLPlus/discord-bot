@@ -26,7 +26,7 @@ type parsedConfigEntry struct {
 }
 type parsedConfig map[string]parsedConfigEntry
 
-func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
+func Process(_ refs.Store, s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	codes := make([]string, 0)
 	config := parsedConfig{}
 

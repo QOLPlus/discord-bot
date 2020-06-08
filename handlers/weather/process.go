@@ -13,7 +13,7 @@ var Registry = &refs.HandlerRegistry{
 	Proc:     Process,
 }
 
-func Process(s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
+func Process(_ refs.Store, s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	for _, keyword := range data {
 		if len(keyword) == 0 {
 			keyword = "반포동"

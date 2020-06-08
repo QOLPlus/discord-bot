@@ -2,19 +2,21 @@ package handlers
 
 import (
 	"github.com/QOLPlus/discord-bot/handlers/stock_trend"
+	"github.com/QOLPlus/discord-bot/handlers/weather"
 	"github.com/bwmarrin/discordgo"
 	"strings"
 
-	"github.com/QOLPlus/discord-bot/handlers/stock"
-	"github.com/QOLPlus/discord-bot/handlers/weather"
+	"github.com/QOLPlus/discord-bot/handlers/asset"
 	"github.com/QOLPlus/discord-bot/refs"
 )
 
 func HandlerFactory() interface{} {
+	store := refs.Store{}
 	onHandlers := make(refs.HandlerMap)
-	onHandlers.Register(stock.Registry)
+	//onHandlers.Register(stock.Registry)
 	onHandlers.Register(stock_trend.Registry)
 	onHandlers.Register(weather.Registry)
+	onHandlers.Register(asset.Registry)
 	onCommands := onHandlers.GetKeys()
 
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -22,9 +24,9 @@ func HandlerFactory() interface{} {
 			return
 		}
 
-		if mentionHandled(s, m) {
-			return
-		}
+		//if mentionHandled(s, m) {
+		//	return
+		//}
 
 		tasks := groupByCommands(parseTokens(m.Content), onCommands)
 		if len(tasks) == 0 {
@@ -32,7 +34,7 @@ func HandlerFactory() interface{} {
 		}
 
 		for command, phrase := range tasks {
-			onHandlers[command](s, m, phrase)
+			onHandlers[command](store, s, m, phrase)
 		}
 	}
 }
