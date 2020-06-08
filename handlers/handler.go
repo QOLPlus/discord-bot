@@ -10,8 +10,7 @@ import (
 	"github.com/QOLPlus/discord-bot/refs"
 )
 
-func HandlerFactory() interface{} {
-	store := refs.Store{}
+func HandlerFactory(store *refs.Store) interface{} {
 	onHandlers := make(refs.HandlerMap)
 	//onHandlers.Register(stock.Registry)
 	onHandlers.Register(stock_trend.Registry)

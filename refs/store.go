@@ -6,17 +6,17 @@ import (
 )
 
 type Store struct {
-	Asset AssetStore
+	Asset *AssetStore
 }
 
 type AssetStore struct {
 	Timestamp int64
-	Data      []AssetData
+	Data      *[]AssetData
 }
 
 type AssetData struct {
-	Master coreAsset.StockMaster
-	Assets []coreAsset.Asset
+	Master *coreAsset.StockMaster
+	Assets *[]coreAsset.Asset
 }
 
 func (as *AssetStore) Reload(offset int64) {
@@ -37,13 +37,13 @@ func (as *AssetStore) Reload(offset int64) {
 		if err != nil {
 			continue
 		}
-		assetData.Master = master
-		assetData.Assets = *assets
+		assetData.Master = &master
+		assetData.Assets = assets
 		data = append(data, assetData)
 	}
 
 	if len(data) > 0 {
-		as.Data = data
+		as.Data = &data
 		as.Timestamp = now
 	}
 }

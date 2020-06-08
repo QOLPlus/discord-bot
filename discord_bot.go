@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/QOLPlus/discord-bot/refs"
 	"github.com/bwmarrin/discordgo"
 	"os"
 	"os/signal"
@@ -20,8 +21,12 @@ func main() {
 		return
 	}
 
+	store := refs.Store{
+		Asset: &refs.AssetStore{},
+	}
+
 	// Add handler
-	bot.AddHandler(handlers.HandlerFactory())
+	bot.AddHandler(handlers.HandlerFactory(&store))
 	bot.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		_ = s.UpdateStatus(0, gameTitle)
 	})

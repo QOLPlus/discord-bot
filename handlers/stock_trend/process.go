@@ -41,7 +41,7 @@ func (e exchangeMap) buildMessage() string {
 	return strings.Join(globalMessages, "\n")
 }
 
-func Process(_ refs.Store, s *discordgo.Session, m *discordgo.MessageCreate, _ []string) {
+func Process(_ *refs.Store, s *discordgo.Session, m *discordgo.MessageCreate, _ []string) {
 	fetched, err := stock.FetchTrends(nil)
 	if err != nil {
 		return

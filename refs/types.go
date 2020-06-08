@@ -2,7 +2,7 @@ package refs
 
 import "github.com/bwmarrin/discordgo"
 
-type HandlerProc func(Store, *discordgo.Session, *discordgo.MessageCreate, []string)
+type HandlerProc func(*Store, *discordgo.Session, *discordgo.MessageCreate, []string)
 type HandlerMap map[string]HandlerProc
 type HandlerRegistry struct {
 	Commands []string

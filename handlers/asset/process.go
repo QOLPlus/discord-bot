@@ -26,7 +26,7 @@ var notFoundMessage string = fmt.Sprintf(
 
 const MaxCount int = 3
 
-func Process(store refs.Store, s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
+func Process(store *refs.Store, s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	assetStore := store.Asset
 	assetStore.Reload(3600)
 
@@ -37,8 +37,8 @@ func Process(store refs.Store, s *discordgo.Session, m *discordgo.MessageCreate,
 		}
 
 		var selectedAssets []coreAsset.Asset
-		for _, datum := range assetStore.Data {
-			for _, asset := range datum.Assets {
+		for _, datum := range *assetStore.Data {
+			for _, asset := range *datum.Assets {
 				if similar(asset, phrase) {
 					selectedAssets = append(selectedAssets, asset)
 				}
