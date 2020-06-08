@@ -63,13 +63,13 @@ func Process(store *refs.Store, s *discordgo.Session, m *discordgo.MessageCreate
 	}
 
 	if len(codes) == 0 {
-		_, _ = s.ChannelMessage(m.ChannelID, notFoundMessage)
+		_, _ = s.ChannelMessageSend(m.ChannelID, notFoundMessage)
 		return
 	}
 
 	securities, err := coreAsset.FetchSecuritiesByCodes(codes)
 	if err != nil {
-		_, _ = s.ChannelMessage(m.ChannelID, notFoundMessage)
+		_, _ = s.ChannelMessageSend(m.ChannelID, notFoundMessage)
 		return
 	}
 
