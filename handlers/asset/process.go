@@ -122,20 +122,14 @@ func buildSimpleMessage(security coreAsset.Security) string {
 		strings.Join([]string{
 			humanize.Commaf(security.TradePrice),
 			fmt.Sprintf("%s%.2f", arrowOfSecurity(security), math.Abs(security.ChangePrice)),
-			"(" + fmt.Sprintf("%.2f", security.ChangeRate * 100) + "%)",
+			"(" + fmt.Sprintf("%.2f", pmChangeRate(security) * 100) + "%)",
 		}, " "),
 		fmt.Sprintf(
-			"%s / %s주 / %s",
+			"%s@%s / %s주 / %s",
+			security.TickerSymbol,
 			security.Market,
 			humanize.Comma(security.AccTradeVolume),
 			humanize.Commaf(security.GlobalAccTradePrice),
 		),
 	)
 }
-
-
-//tickerSymbol: AMZN
-//shortCode: US.AMZN
-//koreanName: 아마존닷컴
-//englishName: AMAZON COM INC
-//code: US.AMZN

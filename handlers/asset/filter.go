@@ -19,6 +19,15 @@ func arrowOfSecurity(security coreAsset.Security) string {
 	}
 }
 
+func pmChangeRate(security coreAsset.Security) float64 {
+	switch security.Change {
+	case "FALL", "LOWER_LIMIT":
+		return -1 * security.ChangeRate
+	default:
+		return security.ChangeRate
+	}
+}
+
 func asterNameIfKosdaq(security coreAsset.Security) string {
 	aster := ""
 	if security.Market == "KOSDAQ" {
