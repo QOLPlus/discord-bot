@@ -3,7 +3,7 @@ module github.com/QOLPlus/discord-bot
 go 1.14
 
 require (
-	github.com/QOLPlus/core v1.0.9
+	github.com/QOLPlus/core v1.0.10
 	github.com/bwmarrin/discordgo v0.20.3
 	github.com/cosmtrek/air v1.12.1 // indirect
 	github.com/dustin/go-humanize v1.0.0
