@@ -23,6 +23,7 @@ func main() {
 
 	store := refs.Store{
 		Asset: &refs.AssetStore{},
+		Ticker: &refs.TickerStore{},
 	}
 
 	// Add handler

@@ -2,16 +2,23 @@ package refs
 
 import (
 	coreAsset "github.com/QOLPlus/core/commands/asset"
+	coreCrypto "github.com/QOLPlus/core/commands/cryptocurrency"
 	"time"
 )
 
 type Store struct {
 	Asset *AssetStore
+	Ticker *TickerStore
 }
 
 type AssetStore struct {
 	Timestamp int64
 	Data      *[]AssetData
+}
+
+type TickerStore struct {
+	Timestamp int64
+	Data      *[]coreCrypto.MarketMaster
 }
 
 type AssetData struct {
@@ -45,5 +52,21 @@ func (as *AssetStore) Reload(offset int64) {
 	if len(data) > 0 {
 		as.Data = &data
 		as.Timestamp = now
+	}
+}
+func (ts *TickerStore) Reload(offset int64) {
+	now := time.Now().Unix()
+	if (now - ts.Timestamp) < offset {
+		return
+	}
+
+	masters, err := coreCrypto.FetchMarketMasters()
+	if err != nil {
+		return
+	}
+
+	if len(*masters) > 0 {
+		ts.Data = masters
+		ts.Timestamp = now
 	}
 }
