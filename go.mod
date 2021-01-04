@@ -1,6 +1,6 @@
 module github.com/QOLPlus/discord-bot
 
-go 1.14
+go 1.15
 
 require (
 	github.com/QOLPlus/core v1.1.0
