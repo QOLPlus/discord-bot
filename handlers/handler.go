@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/QOLPlus/discord-bot/handlers/cryptocurrency"
 	"github.com/QOLPlus/discord-bot/handlers/stock_trend"
 	"github.com/QOLPlus/discord-bot/handlers/weather"
 	"github.com/bwmarrin/discordgo"
@@ -16,6 +17,7 @@ func HandlerFactory(store *refs.Store) interface{} {
 	onHandlers.Register(stock_trend.Registry)
 	onHandlers.Register(weather.Registry)
 	onHandlers.Register(asset.Registry)
+	onHandlers.Register(cryptocurrency.Registry)
 	onCommands := onHandlers.GetKeys()
 
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
