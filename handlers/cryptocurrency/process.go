@@ -2,21 +2,21 @@ package cryptocurrency
 
 import (
 	"fmt"
-	coreCrypto "github.com/QOLPlus/core/commands/cryptocurrency"
-	"github.com/QOLPlus/discord-bot/refs"
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"math"
 	"regexp"
 	"strings"
-)
 
+	"github.com/QOLPlus/core/commands/cryptocurrency"
+	"github.com/QOLPlus/discord-bot/refs"
+)
 
 var commands = []string{"코인", "크립토", "가상자산", "가상화폐", "CC", "cc", "c"}
 
 var Registry = &refs.HandlerRegistry{
 	Commands: commands,
-	Proc: Process,
+	Proc:     Process,
 }
 
 var notFoundMessage string = fmt.Sprintf(
@@ -24,20 +24,22 @@ var notFoundMessage string = fmt.Sprintf(
 	strings.Join(commands, "|"),
 )
 
-var KRW string = "KRW"
+const (
+	KRW      string = "KRW"
+)
 
 func Process(store *refs.Store, s *discordgo.Session, m *discordgo.MessageCreate, data []string) {
 	tickerStore := store.Ticker
 	tickerStore.Reload(3600)
 
-	var selectedMarkets []coreCrypto.MarketMaster
+	var selectedMarkets []cryptocurrency.MarketMaster
 	for _, phrase := range data {
 		if len(phrase) == 0 || KRW == phrase {
 			continue
 		}
 
-		for _, master := range  *tickerStore.Data {
-			if similar(master, phrase) && strings.HasPrefix(master.Market, KRW){
+		for _, master := range *tickerStore.Data {
+			if similar(master, phrase) && strings.HasPrefix(master.Market, KRW) {
 				selectedMarkets = append(selectedMarkets, master)
 			}
 		}
@@ -61,7 +63,7 @@ func Process(store *refs.Store, s *discordgo.Session, m *discordgo.MessageCreate
 	}
 }
 
-func similar(market coreCrypto.MarketMaster, keyword string) bool {
+func similar(market cryptocurrency.MarketMaster, keyword string) bool {
 	match, _ := regexp.MatchString(
 		keyword,
 		strings.Join([]string{
@@ -73,14 +75,14 @@ func similar(market coreCrypto.MarketMaster, keyword string) bool {
 	return match
 }
 
-func buildSimpleMessage(market coreCrypto.MarketMaster, ticker coreCrypto.Ticker) string {
+func buildSimpleMessage(market cryptocurrency.MarketMaster, ticker cryptocurrency.Ticker) string {
 	return fmt.Sprintf(
 		"**%s**: %s %s",
 		market.KoreanName,
 		strings.Join([]string{
 			humanize.Commaf(ticker.TradePrice),
 			fmt.Sprintf("%s%s", arrowOfTicker(ticker), humanize.CommafWithDigits(math.Abs(ticker.ChangePrice), 2)),
-			"(" + fmt.Sprintf("%.2f", pmChangeRate(ticker) * 100) + "%)",
+			"(" + fmt.Sprintf("%.2f", pmChangeRate(ticker)*100) + "%)",
 		}, " "),
 		fmt.Sprintf(
 			"%s / 52주 신고가: %s(%s) / 52주 신저가: %s(%s)",
