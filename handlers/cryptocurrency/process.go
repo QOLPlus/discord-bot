@@ -12,7 +12,7 @@ import (
 	"github.com/QOLPlus/discord-bot/refs"
 )
 
-var commands = []string{"코인", "크립토", "가상자산", "가상화폐", "CC", "cc", "c"}
+var commands = []string{"코인", "크립토", "가상자산", "가상화폐", "CC", "cc", "c", "#"}
 
 var Registry = &refs.HandlerRegistry{
 	Commands: commands,
